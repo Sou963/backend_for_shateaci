@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
 // ===================== Payment Success =====================
 router.post('/payment-success', (req, res) => {
   console.log('Payment Success Data:', req.body);
-  res.redirect('http://localhost:3001/success');
+  res.redirect('https://sateachi-com.vercel.app/success');
 });
 
 // ===================== Payment Fail =====================
