@@ -25,10 +25,10 @@ router.post('/', async (req, res) => {
       total_amount: order.quantity * 100 || 100,
       currency: 'BDT',
       tran_id,
-      success_url: 'http://localhost:3000/api/payment/payment-success',
-      fail_url: 'http://localhost:3000/api/payment/payment-fail',
-      cancel_url: 'http://localhost:3000/api/payment/payment-cancel',
-      ipn_url: 'http://localhost:3000/api/payment/ipn',
+      success_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-success',
+      fail_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-fail',
+      cancel_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-cancel',
+      ipn_url: 'https://backend-for-shateaci.vercel.app/api/payment/ipn',
       shipping_method: 'Courier',
       product_name: 'Test Product',
       product_category: 'General',
@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
 // ===================== Payment Success =====================
 router.post('/payment-success', (req, res) => {
   console.log('Payment Success Data:', req.body);
-  res.redirect('http://localhost:3001/success');
+  res.redirect('https://sateachi-com.vercel.app/success');
 });
 
 // ===================== Payment Fail =====================
