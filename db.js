@@ -6,7 +6,9 @@ let db;
 async function connectDB() {
   const mongoUri = process.env.MONGO_URI;
   if (!mongoUri) {
-    throw new Error("Missing required env var: MONGO_URI");
+    const err = new Error("Missing required env var: MONGO_URI");
+    err.code = "MISSING_MONGO_URI";
+    throw err;
   }
 
   if (!client) {

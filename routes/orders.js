@@ -26,7 +26,13 @@ router.post("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Order Error:", error);
-    res.status(500).json({ success: false });
+    res.status(500).json({
+      success: false,
+      message:
+        error && error.code === "MISSING_MONGO_URI"
+          ? error.message
+          : "Server error",
+    });
   }
 });
 
@@ -45,7 +51,13 @@ router.get("/", async (req, res) => {
     res.json(allOrders);
   } catch (error) {
     console.error("Fetch Orders Error:", error);
-    res.status(500).json({ success: false, message: "Server error fetching orders" });
+    res.status(500).json({
+      success: false,
+      message:
+        error && error.code === "MISSING_MONGO_URI"
+          ? error.message
+          : "Server error fetching orders",
+    });
   }
 });
 

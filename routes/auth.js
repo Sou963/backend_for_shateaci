@@ -32,7 +32,12 @@ router.post("/register", async (req, res) => {
     res.status(201).json({ message: "Registration successful" });
   } catch (error) {
     console.error("Register Error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      message:
+        error && error.code === "MISSING_MONGO_URI"
+          ? error.message
+          : "Server error",
+    });
   }
 });
 
@@ -66,7 +71,12 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      message:
+        error && error.code === "MISSING_MONGO_URI"
+          ? error.message
+          : "Server error",
+    });
   }
 });
 

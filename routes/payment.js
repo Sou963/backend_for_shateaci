@@ -73,7 +73,11 @@ router.post("/", async (req, res) => {
     res.json({ success: true, GatewayPageURL: apiResponse.GatewayPageURL });
   } catch (err) {
     console.error("Payment Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message:
+        err && err.code === "MISSING_MONGO_URI" ? err.message : "Server error",
+    });
   }
 });
 
@@ -124,7 +128,13 @@ router.get("/", async (req, res) => {
     console.error("Fetch Orders Error:", error);
     res
       .status(500)
-      .json({ success: false, message: "Server error fetching orders" });
+      .json({
+        success: false,
+        message:
+          error && error.code === "MISSING_MONGO_URI"
+            ? error.message
+            : "Server error fetching orders",
+      });
   }
 });
 
