@@ -82,7 +82,7 @@ router.post("/payment-success", (req, res) => {
   console.log("Payment Success Data:", req.body);
   res.redirect(
     process.env.PAYMENT_SUCCESS_REDIRECT ||
-      "https://sateachi-com.vercel.app/success",
+      "https://sateachi-com.vercel.app/success"
   );
 });
 

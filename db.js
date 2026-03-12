@@ -1,19 +1,24 @@
 const { MongoClient } = require("mongodb");
 
-const mongoUri = process.env.MONGO_URI;
-if (!mongoUri) {
-  throw new Error("Missing required env var: MONGO_URI");
-}
-
-const client = new MongoClient(mongoUri);
+let client;
 let db;
 
 async function connectDB() {
+  const mongoUri = process.env.MONGO_URI;
+  if (!mongoUri) {
+    throw new Error("Missing required env var: MONGO_URI");
+  }
+
+  if (!client) {
+    client = new MongoClient(mongoUri);
+  }
+
   if (!db) {
     await client.connect();
-    db = client.db("my_shop");
+    db = client.db(process.env.MONGO_DB_NAME || "my_shop");
     console.log("MongoDB Connected");
   }
+
   return db;
 }
 
