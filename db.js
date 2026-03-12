@@ -1,6 +1,11 @@
 const { MongoClient } = require("mongodb");
 
-const client = new MongoClient(process.env.MONGO_URI);
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  throw new Error("Missing required env var: MONGO_URI");
+}
+
+const client = new MongoClient(mongoUri);
 let db;
 
 async function connectDB() {

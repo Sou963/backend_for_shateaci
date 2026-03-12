@@ -3,9 +3,19 @@ const SSLCommerzPayment = require('sslcommerz-lts');
 const connectDB = require('../db');
 const router = express.Router();
 
-const store_id = "abc6912282a8d00c";
-const store_passwd = "abc6912282a8d00c@ssl";
-const is_live = false;
+const store_id = process.env.SSLCOMMERZ_STORE_ID || "abc6912282a8d00c";
+const store_passwd = process.env.SSLCOMMERZ_STORE_PASS || "abc6912282a8d00c@ssl";
+const is_live = process.env.SSLCOMMERZ_IS_LIVE === "true";
+
+function getBaseUrl(req) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const proto = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto || req.protocol || "https")
+    .split(",")[0]
+    .trim();
+  const forwardedHost = req.headers["x-forwarded-host"];
+  const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.headers.host;
+  return process.env.BASE_URL || `${proto}://${host}`;
+}
 
 // ===================== Initialize Payment =====================
 router.post('/', async (req, res) => {
@@ -21,14 +31,15 @@ router.post('/', async (req, res) => {
     });
 
     const tran_id = 'TEST' + Date.now();
+    const baseUrl = getBaseUrl(req);
     const data = {
       total_amount: order.quantity * 100 || 100,
       currency: 'BDT',
       tran_id,
-      success_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-success',
-      fail_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-fail',
-      cancel_url: 'https://backend-for-shateaci.vercel.app/api/payment/payment-cancel',
-      ipn_url: 'https://backend-for-shateaci.vercel.app/api/payment/ipn',
+      success_url: `${baseUrl}/api/payment/payment-success`,
+      fail_url: `${baseUrl}/api/payment/payment-fail`,
+      cancel_url: `${baseUrl}/api/payment/payment-cancel`,
+      ipn_url: `${baseUrl}/api/payment/ipn`,
       shipping_method: 'Courier',
       product_name: 'Test Product',
       product_category: 'General',
@@ -63,7 +74,7 @@ router.post('/', async (req, res) => {
 // ===================== Payment Success =====================
 router.post('/payment-success', (req, res) => {
   console.log('Payment Success Data:', req.body);
-  res.redirect('https://sateachi-com.vercel.app/success');
+  res.redirect(process.env.PAYMENT_SUCCESS_REDIRECT || 'https://sateachi-com.vercel.app/success');
 });
 
 // ===================== Payment Fail =====================
@@ -76,6 +87,12 @@ router.post('/payment-fail', (req, res) => {
 router.post('/payment-cancel', (req, res) => {
   console.log('Payment Cancelled:', req.body);
   res.send(`<h1 class="text-warning text-center mt-5">Payment Cancelled!</h1>`);
+});
+
+// ===================== IPN =====================
+router.post('/ipn', (req, res) => {
+  console.log('Payment IPN:', req.body);
+  res.json({ received: true });
 });
 
 /* ================= GET ALL ORDERS ================= */
